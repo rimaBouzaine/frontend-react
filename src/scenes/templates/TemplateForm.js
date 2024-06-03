@@ -51,7 +51,7 @@ console.log("crd ", crd);
 console.log("targets ", targets);
 
 
-    const url = `http://34.204.81.246/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
+    const url = `http://52.91.128.116/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
     const data = {
       "apiVersion": "templates.gatekeeper.sh/v1beta1",
       "kind": "ConstraintTemplate",
