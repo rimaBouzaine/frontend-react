@@ -74,7 +74,7 @@ const Templates = () => {
         <span>  List of Templates</span>
         <Button color="primary" variant="contained" className="float-right m-4"
           onClick={() => {
-            navigate('/templates/create');
+            navigate('/frontend/templates/create');
           }} >
           Create Template</Button>
 

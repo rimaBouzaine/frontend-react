@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myfrontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myfrontend
+  template:
+    metadata:
+      labels:
+        app: myfrontend
+    spec:
+      containers:
+        - name: myfrontend-container
+          image: bouzaianerima/front:39.0
+          ports:
+            - containerPort: 3000
+

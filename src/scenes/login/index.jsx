@@ -43,7 +43,7 @@ const Login = () => {
         setWithExpiry('userToken', response.data.userToken);
         setWithExpiry('kubeToken', response.data.kubeToken);
 
-        navigate('/');
+        navigate('/frontend');
       } else {
         throw Error(await response.text());
       }
