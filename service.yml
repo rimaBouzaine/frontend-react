@@ -12,7 +12,7 @@ spec:
   ports:
     - port: 8080
       protocol: TCP
-      targetPort: 80
+      targetPort: 3000
   selector:
     app: myfrontend
   sessionAffinity: None

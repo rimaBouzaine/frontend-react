@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: myfrontend-container
-          image: bouzaianerima/front:34.0
+          image: bouzaianerima/front:39.0
           ports:
-            - containerPort: 80
+            - containerPort: 3000
 
