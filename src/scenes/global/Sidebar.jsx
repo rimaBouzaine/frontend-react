@@ -127,7 +127,7 @@ const logoutHandler= ()=>{
             <Box paddingLeft={isCollapsed ? undefined : '10%'}>
               <Item
                 title="Dashboard"
-                to="/"
+                to="/frontend"
                 icon={<HomeOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
@@ -136,14 +136,14 @@ const logoutHandler= ()=>{
 
               <Item
                 title="Templates"
-                to="/templates"
+                to="/frontend/templates"
                 icon={<ReceiptOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />    
               <Item
                 title="Constraints"
-                to="/constraints"
+                to="/frontend/constraints"
                 icon={<ContactsOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
@@ -153,7 +153,7 @@ const logoutHandler= ()=>{
                 }}>
               <Item
                 title="Log out"
-                to="/login"
+                to="/frontend/login"
                 icon={<LogoutIcon />}
                 selected={selected}
                 setSelected={setSelected}
