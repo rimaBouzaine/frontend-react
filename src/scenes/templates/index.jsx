@@ -14,7 +14,7 @@ const Templates = () => {
   const [names, setNames] = useState([])
   useEffect(() => {
     // Base URL
-    const baseUrl = `http://52.91.128.116/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates`;
+    const baseUrl = `http://100.26.178.180/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates`;
 
     // Make the GET request using Axios
     axios.get(baseUrl, {
@@ -39,7 +39,7 @@ const Templates = () => {
 
   function deleteConstraintTemplate(nameTemplate) {
     console.log("name Template ", nameTemplate)
-    const baseUrl = `http://52.91.128.116/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
+    const baseUrl = `http://100.26.178.180/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
 
     // Construct the full URL including the resource nameTemplate
     const deleteUrl = `${baseUrl}${nameTemplate}` ;
@@ -82,7 +82,7 @@ const Templates = () => {
       <div className="flex flex-col gap-2">
         {
           list.map((n) => {
-            return <Card nameT={n} deleteConstraintTemplate={() => deleteConstraintTemplate(n)}></Card>
+            return <Card  key={n} nameT={n} deleteConstraintTemplate={() => deleteConstraintTemplate(n)}></Card>
 
           })
         }
