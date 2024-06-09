@@ -88,7 +88,6 @@ const logoutHandler= ()=>{
                   ml="15px"
                 >
                   <Typography variant="h3" color={colors.grey[100]}>
-                    ADMINIS
                   </Typography>
                   <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                     <MenuOutlinedIcon />
@@ -127,7 +126,7 @@ const logoutHandler= ()=>{
             <Box paddingLeft={isCollapsed ? undefined : '10%'}>
               <Item
                 title="Dashboard"
-                to="/frontend"
+                to="/"
                 icon={<HomeOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
@@ -136,14 +135,14 @@ const logoutHandler= ()=>{
 
               <Item
                 title="Templates"
-                to="/frontend/templates"
+                to="/templates"
                 icon={<ReceiptOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />    
               <Item
                 title="Constraints"
-                to="/frontend/constraints"
+                to="/constraints"
                 icon={<ContactsOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
@@ -153,7 +152,7 @@ const logoutHandler= ()=>{
                 }}>
               <Item
                 title="Log out"
-                to="/frontend/login"
+                to="/login"
                 icon={<LogoutIcon />}
                 selected={selected}
                 setSelected={setSelected}

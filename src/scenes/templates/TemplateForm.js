@@ -30,6 +30,9 @@ spec:
     if (!name) newErrors.name = 'Name is required';
     if (!crd) newErrors.crd = 'CRD is required';
     if (!targets) newErrors.targets = 'Targets are required';
+    if (name && crd && targets && (name !== crd || name !== targets || crd !== targets)) {
+      newErrors.match = 'Name, CRD, and Targets must have the same value';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -51,7 +54,7 @@ spec:
   const createTemplate = () => {
     if (!validateFields()) return;
 
-    const url = `http://100.26.178.180/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
+    const url = `http://100.25.133.9/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
     const data = {
       apiVersion: "templates.gatekeeper.sh/v1beta1",
       kind: "ConstraintTemplate",
@@ -174,6 +177,7 @@ spec:
       <div className="bg-gray-100 border border-gray-300 p-4 rounded mb-4">
         {renderYamlWithInputs(initialYamlTemplate)}
       </div>
+      {errors.match && <div className="text-red-500 mb-4">{errors.match}</div>}
       <button
         onClick={handleGenerateTemplate}
         className="px-4 py-2 bg-blue-500 text-white rounded shadow"
@@ -184,7 +188,7 @@ spec:
         <Button color="primary" variant="contained" className="float-right m-4" onClick={createTemplate}>
           Create
         </Button>
-        <Button variant="contained" color="error" onClick={() => navigate("/frontend/templates")}>
+        <Button variant="contained" color="error" onClick={() => navigate("/templates")}>
           Cancel
         </Button>
       </div>

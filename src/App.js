@@ -64,6 +64,7 @@ function App() {
               <Route path="/frontend/constraints" element={<Constraints />} />
               <Route path="/frontend/constraints/create" element={<ConstraintForm />} />
             </Routes>
+
           </main>
         </div>
       </ThemeProvider>
