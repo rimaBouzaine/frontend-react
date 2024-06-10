@@ -37,16 +37,16 @@ const Mysidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState('Dashboard');
 
-  const isLogin = getWithExpiry('userToken');
+  //const isLogin = getWithExpiry('userToken');
 
- //const isLogin = true;
+  const isLogin = true;
 
-const logoutHandler= ()=>{
-  console.log("is logged out");
-  localStorage.removeItem('userToken');
-  localStorage.removeItem('kubeToken');
+  const logoutHandler = () => {
+    console.log("is logged out");
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('kubeToken');
 
-}
+  }
 
 
   if (isLogin)
@@ -98,14 +98,18 @@ const logoutHandler= ()=>{
 
             {!isCollapsed && (
               <Box mb="25px">
-                <Box display="flex" justifyContent="center" alignItems="center">
-                  <img
-                    alt="profile-user"
-                    width="100px"
-                    height="100px"
-                    src={'../../assets/proxym_logo.jpg'}
-                    style={{ cursor: 'pointer', borderRadius: '50%' }}
-                  />
+                <Box mb="25px">
+                  <Box display="flex" justifyContent="center" alignItems="center">
+                    <img
+                      alt="profile-user"
+                      width="100px"
+                      height="100px"
+                      src={`${process.env.PUBLIC_URL}/assets/proxym_logo.jpg`}
+                      style={{ cursor: 'pointer', borderRadius: '50%' }}
+                    />
+
+                  </Box>
+
                 </Box>
                 <Box textAlign="center">
                   <Typography
@@ -128,7 +132,7 @@ const logoutHandler= ()=>{
                 selected={selected}
                 setSelected={setSelected}
               />
-  
+
 
               <Item
                 title="Templates"
@@ -136,26 +140,26 @@ const logoutHandler= ()=>{
                 icon={<ReceiptOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
-              />    
+              />
               <Item
                 title="Constraints"
                 to="/frontend/constraints"
                 icon={<ContactsOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
-              />     
-              <div onClick={()=>{
-                  logoutHandler()
-                }}>
-              <Item
-                title="Log out"
-                to="/frontend/login"
-                icon={<LogoutIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              /> 
-                </div>  
-              
+              />
+              <div onClick={() => {
+                logoutHandler()
+              }}>
+                <Item
+                  title="Log out"
+                  to="/frontend/login"
+                  icon={<LogoutIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              </div>
+
             </Box>
           </Menu>
         </Sidebar>
