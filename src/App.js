@@ -56,7 +56,7 @@ function App() {
 
           <main className="h-full w-full ">
             <Routes>
-              <Route path="/frontend/" element={<Dashboard />} />
+              <Route path="/frontend" element={<Dashboard />} />
               <Route path="/frontend/login" element={<Login />} />
 
               <Route path="/frontend/templates" element={<Templates />} />

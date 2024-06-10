@@ -54,7 +54,7 @@ spec:
   const createTemplate = () => {
     if (!validateFields()) return;
 
-    const url = `http://100.25.133.9/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
+    const url = `http://54.162.87.128/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
     const data = {
       apiVersion: "templates.gatekeeper.sh/v1beta1",
       kind: "ConstraintTemplate",
@@ -188,7 +188,7 @@ spec:
         <Button color="primary" variant="contained" className="float-right m-4" onClick={createTemplate}>
           Create
         </Button>
-        <Button variant="contained" color="error" onClick={() => navigate("/templates")}>
+        <Button variant="contained" color="error" onClick={() => navigate("/frontend/templates")}>
           Cancel
         </Button>
       </div>
