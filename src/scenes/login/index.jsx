@@ -33,7 +33,7 @@ const Login = () => {
   const handlePasswordLogin = async (values) => {
     try {
       const { username, password } = values;
-      const response = await axios.post(`http://54.162.87.128/login`, {
+      const response = await axios.post(`http://35.174.184.249/login`, {
         username,
         password
       });

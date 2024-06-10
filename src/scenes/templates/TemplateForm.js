@@ -54,7 +54,7 @@ spec:
   const createTemplate = () => {
     if (!validateFields()) return;
 
-    const url = `http://54.162.87.128/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
+    const url = `http://35.174.184.249/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
     const data = {
       apiVersion: "templates.gatekeeper.sh/v1beta1",
       kind: "ConstraintTemplate",

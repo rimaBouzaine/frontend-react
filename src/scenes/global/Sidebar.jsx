@@ -116,9 +116,6 @@ const logoutHandler= ()=>{
                   >
                     Proxym
                   </Typography>
-{/* <Typography variant="h5" color={colors.blueAccent[500]}>
-  "Admin"
-</Typography> */}
                 </Box>
               </Box>
             )}
