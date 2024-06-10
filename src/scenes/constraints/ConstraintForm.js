@@ -38,7 +38,7 @@ const ConstraintForm = () => {
   const [template,setTemplate]= useState('')
   const fetchTemplates = async () => {
     try {
-      const response = await axios.get('http://35.174.184.249/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates', {
+      const response = await axios.get('http://52.87.154.156/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates', {
         headers: {
           Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
         },
@@ -61,7 +61,7 @@ const ConstraintForm = () => {
   }, []);
 
   const handleSubmit = (values) => {
-    const url = `http://35.174.184.249/proxy/apis/constraints.gatekeeper.sh/v1beta1/`+template;
+    const url = `http://52.87.154.156/proxy/apis/constraints.gatekeeper.sh/v1beta1/`+template;
 
     const data = {
       apiVersion: 'constraints.gatekeeper.sh/v1beta1',

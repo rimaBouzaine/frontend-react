@@ -12,7 +12,7 @@ const Constraints = () => {
   const [names, setNames] = useState([]);
   
   useEffect(() => {
-    const baseUrl = `http://35.174.184.249/proxy/apis/constraints.gatekeeper.sh/v1beta1/`;
+    const baseUrl = `http://52.87.154.156/proxy/apis/constraints.gatekeeper.sh/v1beta1/`;
 
     axios.get(baseUrl, {
       headers: {
