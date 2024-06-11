@@ -73,7 +73,7 @@ const Templates = () => {
           Create Template
         </Button>
       </div>
-      {list.length === 0 ? (
+      {/* {list.length === 0 ? (
         <div className="text-center text-gray-500">No Templates found</div>
       ) : (
         <div className="flex flex-col gap-2">
@@ -88,7 +88,7 @@ const Templates = () => {
             ></Card>
           ))}
         </div>
-      )}
+      )} */}
     </Box>
   );
 };

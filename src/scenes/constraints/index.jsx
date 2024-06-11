@@ -86,9 +86,9 @@ const Constraints = () => {
               key={n}
               nameT={n}
               deleteConstraintTemplate={() => deleteConstraint(n)}
-              updateConstraintTemplate={() => {
-                navigate('/frontend/edit/' + n);
-              }}
+              // updateConstraintTemplate={() => {
+              //   navigate('edit/' + n);
+              // }}
             ></Card>
           ))}
         </div>

@@ -36,16 +36,14 @@ function App() {
 
               <Route path="/frontend/templates" element={<Templates />} />
               <Route path="/frontend/templates/create" element={<TemplateForm />} />
-              <Route
+              {/* <Route
                 path="/frontend/templates/edit/:id"
                 element={<UpdateTemplateForm />}
-              />
+              /> */}
               <Route path="/frontend/constraints" element={<Constraints />} />
               <Route path="/frontend/constraints/create" element={<ConstraintForm />} />
-              <Route
-                path="/frontend/constraints/edit/:id"
-                element={<UpdateConstraintForm />}
-              />
+              {/* <Route path="/frontend/constraints/edit/:id" element={<UpdateConstraintForm />}
+              /> */}
             </Routes>
 
           </main>
