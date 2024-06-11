@@ -8,6 +8,9 @@ import Templates from "./scenes/templates";
 import TemplateForm from "./scenes/templates/TemplateForm";
 import Constraints from "./scenes/constraints";
 import ConstraintForm from "./scenes/constraints/ConstraintForm";
+import UpdateConstraintForm from './scenes/constraints/UpdateContraint';
+import UpdateTemplateForm from './scenes/templates/UpdateTemplate';
+
 import Login from "./scenes/login";
 import { useNavigate } from "react-router-dom";
 
@@ -33,8 +36,16 @@ function App() {
 
               <Route path="/frontend/templates" element={<Templates />} />
               <Route path="/frontend/templates/create" element={<TemplateForm />} />
+              <Route
+                path="/frontend/templates/edit/:id"
+                element={<UpdateTemplateForm />}
+              />
               <Route path="/frontend/constraints" element={<Constraints />} />
               <Route path="/frontend/constraints/create" element={<ConstraintForm />} />
+              <Route
+                path="/frontend/constraints/edit/:id"
+                element={<UpdateConstraintForm />}
+              />
             </Routes>
 
           </main>

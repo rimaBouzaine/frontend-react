@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getWithExpiry } from '../../util/localstorage';
 import axios from 'axios';
 import yaml from 'js-yaml';
 import { saveAs } from 'file-saver';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
-const TemplateForm = () => {
+const UpdateTemplateForm = () => {
   const initialYamlTemplate = `
 apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
@@ -20,24 +20,45 @@ spec:
 `;
 
   const navigate = useNavigate();
+  const { id } = useParams(); // Assuming the template ID is passed as a route parameter
   const [crd, setCrd] = useState('');
   const [name, setName] = useState('');
   const [targets, setTargets] = useState('');
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    fetchTemplate();
+  }, []);
+
+  const fetchTemplate = async () => {
+    try {
+      const response = await axios.get(
+        `http://100.25.170.116/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
+          },
+        }
+      );
+
+      const template = response.data;
+      setName(template.metadata.name);
+      setCrd(template.metadata.name);
+
+      setTargets(template.metadata.name);
+
+      //    setCrd(yaml.dump(template.spec.crd));
+      //  setTargets(template.spec.targets.map((target) => target.rego).join('\n'));
+    } catch (error) {
+      console.error('Error fetching template:', error);
+    }
+  };
 
   const validateFields = () => {
     const newErrors = {};
     if (!name) newErrors.name = 'Name is required';
     if (!crd) newErrors.crd = 'CRD is required';
     if (!targets) newErrors.targets = 'Targets are required';
-    if (
-      name &&
-      crd &&
-      targets &&
-      (name !== crd || name !== targets || crd !== targets)
-    ) {
-      newErrors.match = 'Name, CRD, and Targets must have the same value';
-    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -53,13 +74,30 @@ spec:
     const parsedYaml = yaml.load(templateWithUserInput);
     const yamlString = yaml.dump(parsedYaml);
     const blob = new Blob([yamlString], { type: 'text/yaml' });
-    saveAs(blob, 'new-template.yaml');
+    saveAs(blob, 'edited-template.yaml');
   };
 
-  const createTemplate = () => {
+  const updateTemplate = () => {
     if (!validateFields()) return;
 
-    const url = `http://100.25.170.116/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
+    const url = `http://100.25.170.116/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/${id}`;
+    /*  const data = {
+      apiVersion: 'templates.gatekeeper.sh/v1beta1',
+      kind: 'ConstraintTemplate',
+      metadata: {
+        name: name,
+      },
+      spec: {
+        crd: yaml.load(crd),
+        targets: targets.split('\n').map((target) => ({
+          rego: target,
+          target: 'admission.k8s.gatekeeper.sh',
+        })),
+      },
+    };
+*/
+
+    // TODO: it return error  422 ;
     const data = {
       apiVersion: 'templates.gatekeeper.sh/v1beta1',
       kind: 'ConstraintTemplate',
@@ -91,9 +129,8 @@ spec:
         ],
       },
     };
-
     axios
-      .post(url, data, {
+      .put(url, data, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -193,7 +230,7 @@ spec:
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Create new Template</h1>
+      <h1 className="text-xl font-bold mb-4">Edit Template</h1>
       <div className="bg-gray-100 border border-gray-300 p-4 rounded mb-4">
         {renderYamlWithInputs(initialYamlTemplate)}
       </div>
@@ -209,9 +246,9 @@ spec:
           color="primary"
           variant="contained"
           className="float-right m-4"
-          onClick={createTemplate}
+          onClick={updateTemplate}
         >
-          Create
+          Update
         </Button>
         <Button
           variant="contained"
@@ -225,4 +262,4 @@ spec:
   );
 };
 
-export default TemplateForm;
+export default UpdateTemplateForm;

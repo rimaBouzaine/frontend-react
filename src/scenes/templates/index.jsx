@@ -1,6 +1,6 @@
-import { Box, useTheme } from "@mui/material";
-import Header from "../../components/Header";
-import Card from "../../components/Card";
+import { Box, useTheme } from '@mui/material';
+import Header from '../../components/Header';
+import Card from '../../components/Card';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -12,15 +12,16 @@ const Templates = () => {
   const [names, setNames] = useState([]);
 
   useEffect(() => {
-    const baseUrl = `http://52.87.154.156/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates`;
+    const baseUrl = `http://100.25.170.116/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates`;
 
-    axios.get(baseUrl, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getWithExpiry("kubeToken")}`,
-      }
-    })
-      .then(response => {
+    axios
+      .get(baseUrl, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
+        },
+      })
+      .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           const rs = response.data.items;
           setNames(rs);
@@ -28,25 +29,28 @@ const Templates = () => {
       });
   }, []);
 
-  const list = names.map(obj => obj.metadata.name);
+  const list = names.map((obj) => obj.metadata.name);
 
   function deleteConstraintTemplate(nameTemplate) {
-    const baseUrl = `http://52.87.154.156/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
+    const baseUrl = `http://100.25.170.116/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
     const deleteUrl = `${baseUrl}${nameTemplate}`;
 
-    axios.delete(deleteUrl, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getWithExpiry("kubeToken")}`,
-      }
-    })
-      .then(response => {
+    axios
+      .delete(deleteUrl, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
+        },
+      })
+      .then((response) => {
         if (response.status >= 200 && response.status < 300) {
-          const updatedItems = names.filter(obj => obj.metadata.name !== nameTemplate);
+          const updatedItems = names.filter(
+            (obj) => obj.metadata.name !== nameTemplate
+          );
           setNames(updatedItems);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         if (error.response) {
           console.error('Error details:', error.response.data);
         }
@@ -58,10 +62,14 @@ const Templates = () => {
       <Header title="Templates" />
       <div className="mx-2 my-8">
         <span>List of Templates</span>
-        <Button color="primary" variant="contained" className="float-right m-4"
+        <Button
+          color="primary"
+          variant="contained"
+          className="float-right m-4"
           onClick={() => {
             navigate('/frontend/templates/create');
-          }} >
+          }}
+        >
           Create Template
         </Button>
       </div>
@@ -70,7 +78,14 @@ const Templates = () => {
       ) : (
         <div className="flex flex-col gap-2">
           {list.map((n) => (
-            <Card key={n} nameT={n} deleteConstraintTemplate={() => deleteConstraintTemplate(n)}></Card>
+            <Card
+              key={n}
+              nameT={n}
+              deleteConstraintTemplate={() => deleteConstraintTemplate(n)}
+              updateConstraintTemplate={() => {
+                navigate('/frontend/edit/' + n);
+              }}
+            ></Card>
           ))}
         </div>
       )}

@@ -4,7 +4,7 @@ import { TextField, MenuItem, Button } from '@mui/material';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { getWithExpiry } from '../../util/localstorage';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -13,19 +13,14 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/Inbox';
 import { FormControl, InputLabel, Select } from '@mui/material';
 
-const initialValues = {
-  name: '',
-  description: '',
-  template: '',
-};
-
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
   template: Yup.string().required('Template is required'),
 });
 
-const ConstraintForm = () => {
+const UpdateConstraintForm = () => {
   const navigate = useNavigate();
+  const { id } = useParams(); // Assuming you are passing the constraint id via route params
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scope, setScope] = useState('');
   const [name, setName] = useState('');
@@ -33,9 +28,15 @@ const ConstraintForm = () => {
   const [kind, setKind] = useState('');
   const [disabledApi, setDisabledApi] = useState(true);
   const [disabledKind, setDisabledKind] = useState(true);
-  const [excludedtemplates, setExcludedtemplates] = useState('');
+  const [excludedNamespaces, setExcludedNamespaces] = useState('');
   const [templates, setTemplates] = useState([]);
   const [template, setTemplate] = useState('');
+  const [initialValues, setInitialValues] = useState({
+    name: '',
+    description: '',
+    template: '',
+  });
+
   const fetchTemplates = async () => {
     try {
       const response = await axios.get(
@@ -55,28 +56,53 @@ const ConstraintForm = () => {
     }
   };
 
-  useEffect(() => {
-    // Fetch templates from the API
+  const fetchConstraint = async () => {
+    try {
+      const response = await axios.get(
+        `http://100.25.170.116/proxy/apis/constraints.gatekeeper.sh/v1beta1/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
+          },
+        }
+      );
 
+      const data = response.data.items[0];
+      setInitialValues({
+        name: data.metadata.name,
+        description: data.spec.description || '',
+        template: data.kind,
+      });
+      setScope(data.spec.match.scope);
+      setApi(data.spec.match.kinds[0].apiGroups[0]);
+      setKind(data.spec.match.kinds[0].kinds[0]);
+      setExcludedNamespaces(data.spec.match.excludedNamespaces.join(', '));
+      setTemplate(data.kind);
+    } catch (error) {
+      console.error('Error fetching constraint:', error);
+    }
+  };
+
+  useEffect(() => {
     fetchTemplates();
+    fetchConstraint();
   }, []);
 
   const handleSubmit = (values) => {
-    const url =
-      `http://100.25.170.116/proxy/apis/constraints.gatekeeper.sh/v1beta1/` +
-      template;
+    const url = `http://100.25.170.116/proxy/apis/constraints.gatekeeper.sh/v1beta1/${template}`;
 
+    // change the body of the edit as it required.
     const data = {
       apiVersion: 'constraints.gatekeeper.sh/v1beta1',
       kind: template,
       metadata: {
-        name: `${name}`,
+        name: values.name,
       },
       spec: {
         match: {
-          kinds: [{ apiGroups: [`${api}`], kinds: [`${kind}`] }],
-          scope: `${scope}`,
-          excludedNamespaces: excludedtemplates
+          kinds: [{ apiGroups: [api], kinds: [kind] }],
+          scope: scope,
+          excludedNamespaces: excludedNamespaces
             .split(',')
             .map((ns) => ns.trim()),
         },
@@ -86,9 +112,8 @@ const ConstraintForm = () => {
       },
     };
 
-    // Make the POST request using Axios
     axios
-      .post(url, data, {
+      .put(url, data, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -124,8 +149,8 @@ const ConstraintForm = () => {
     setName(event.target.value);
   };
 
-  const handleExcludedtemplatesChange = (event) => {
-    setExcludedtemplates(event.target.value);
+  const handleExcludedNamespacesChange = (event) => {
+    setExcludedNamespaces(event.target.value);
   };
 
   return (
@@ -133,11 +158,12 @@ const ConstraintForm = () => {
       initialValues={initialValues}
       onSubmit={handleSubmit}
       validationSchema={validationSchema}
+      enableReinitialize
     >
       {({ values, errors, touched, handleChange }) => (
         <Form className="w-5/6">
           <h1 className="text-3xl font-bold text-center my-8">
-            Create new Constraint
+            Update Constraint
           </h1>
           <div className="w-full flex pl-4 gap-5">
             <div className="flex" style={{ flex: 1 }}>
@@ -237,8 +263,8 @@ const ConstraintForm = () => {
                     onChange={handleScopeChange}
                     required
                   >
-                    <MenuItem value="cluster">Cluster</MenuItem>
-                    <MenuItem value="namespace">Namespace</MenuItem>
+                    <MenuItem value="Cluster">Cluster</MenuItem>
+                    <MenuItem value="Namespace">Namespace</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -252,10 +278,10 @@ const ConstraintForm = () => {
                 />
 
                 <TextField
-                  id="Excludedtemplates"
-                  label="Excluded namespaces"
-                  value={excludedtemplates}
-                  onChange={handleExcludedtemplatesChange}
+                  id="excludedNamespaces"
+                  label="Excluded Namespaces"
+                  value={excludedNamespaces}
+                  onChange={handleExcludedNamespacesChange}
                   fullWidth
                   required
                 />
@@ -322,7 +348,7 @@ const ConstraintForm = () => {
 
           <div className="flex w-full gap-4 my-4 justify-end">
             <Button type="submit" variant="contained" color="primary">
-              Create
+              Update
             </Button>
             <Button
           variant="contained"
@@ -338,4 +364,4 @@ const ConstraintForm = () => {
   );
 };
 
-export default ConstraintForm;
+export default UpdateConstraintForm;
