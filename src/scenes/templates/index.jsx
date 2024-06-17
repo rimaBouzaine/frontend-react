@@ -12,7 +12,7 @@ const Templates = () => {
   const [names, setNames] = useState([]);
 
   useEffect(() => {
-    const baseUrl = `http://54.146.79.133/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates`;
+    const baseUrl = `http://52.87.0.87/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates`;
 
     axios
       .get(baseUrl, {
@@ -32,7 +32,7 @@ const Templates = () => {
   const list = names.map((obj) => obj.metadata.name);
 
   function deleteConstraintTemplate(nameTemplate) {
-    const baseUrl = `http://54.146.79.133/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
+    const baseUrl = `http://52.87.0.87/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/`;
     const deleteUrl = `${baseUrl}${nameTemplate}`;
 
     axios
@@ -73,7 +73,7 @@ const Templates = () => {
           Create Template
         </Button>
       </div>
-      {/* {list.length === 0 ? (
+      {list.length === 0 ? (
         <div className="text-center text-gray-500">No Templates found</div>
       ) : (
         <div className="flex flex-col gap-2">
@@ -88,7 +88,7 @@ const Templates = () => {
             ></Card>
           ))}
         </div>
-      )} */}
+      )}
     </Box>
   );
 };
