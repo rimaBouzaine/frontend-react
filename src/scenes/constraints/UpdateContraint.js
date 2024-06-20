@@ -20,7 +20,7 @@ const validationSchema = Yup.object().shape({
 
 const UpdateConstraintForm = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // Assuming you are passing the constraint id via route params
+  const { id } = useParams();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scope, setScope] = useState('');
   const [name, setName] = useState('');
@@ -40,7 +40,7 @@ const UpdateConstraintForm = () => {
   const fetchTemplates = async () => {
     try {
       const response = await axios.get(
-        'http://52.87.0.87/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates',
+        'http://34.201.165.156/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates',
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -50,7 +50,7 @@ const UpdateConstraintForm = () => {
       const rs = response.data.items;
       const list = rs.map((obj) => obj.metadata.name);
 
-      setTemplates(list); // Adjust based on API response structure
+      setTemplates(list);
     } catch (error) {
       console.error('Error fetching templates:', error);
     }
@@ -59,7 +59,7 @@ const UpdateConstraintForm = () => {
   const fetchConstraint = async () => {
     try {
       const response = await axios.get(
-        `http://52.87.0.87/proxy/apis/constraints.gatekeeper.sh/v1beta1/${id}`,
+        `http://34.201.165.156/proxy/apis/constraints.gatekeeper.sh/v1beta1/${id}`,
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -89,9 +89,10 @@ const UpdateConstraintForm = () => {
   }, []);
 
   const handleSubmit = (values) => {
-    const url = `http://52.87.0.87/proxy/apis/constraints.gatekeeper.sh/v1beta1/${template}`;
+    console.log('Submitting form with values:', values); // Debugging log
 
-    // change the body of the edit as it required.
+    const url = `http://34.201.165.156/proxy/apis/constraints.gatekeeper.sh/v1beta1/${template}`;
+
     const data = {
       apiVersion: 'constraints.gatekeeper.sh/v1beta1',
       kind: template,
@@ -351,12 +352,12 @@ const UpdateConstraintForm = () => {
               Update
             </Button>
             <Button
-          variant="contained"
-          color="error"
-          onClick={() => navigate('/frontend/constraints')}
-        >
-          Cancel
-        </Button>
+              variant="contained"
+              color="error"
+              onClick={() => navigate('/frontend/constraints')}
+            >
+              Cancel
+            </Button>
           </div>
         </Form>
       )}

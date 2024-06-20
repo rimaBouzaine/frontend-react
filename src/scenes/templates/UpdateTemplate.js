@@ -33,7 +33,7 @@ spec:
   const fetchTemplate = async () => {
     try {
       const response = await axios.get(
-        `http://52.87.0.87/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/${id}`,
+        `http://34.201.165.156/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates/${id}`,
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -80,9 +80,9 @@ spec:
   const updateTemplate = () => {
     if (!validateFields()) return;
 
-    const url = `http://52.87.0.87/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates/${id}`;
+    const url = `http://34.201.165.156/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates/${id}`;
     /*  const data = {
-      apiVersion: 'templates.gatekeeper.sh/v1beta1',
+      apiVersion: 'templates.gatekeeper.sh/v1',
       kind: 'ConstraintTemplate',
       metadata: {
         name: name,
@@ -99,7 +99,7 @@ spec:
 
     // TODO: it return error  422 ;
     const data = {
-      apiVersion: 'templates.gatekeeper.sh/v1beta1',
+      apiVersion: 'templates.gatekeeper.sh/v1',
       kind: 'ConstraintTemplate',
       metadata: {
         name: name,

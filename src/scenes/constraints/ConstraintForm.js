@@ -12,6 +12,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/Inbox';
 import { FormControl, InputLabel, Select } from '@mui/material';
+import { eventTupleToStore } from '@fullcalendar/core/internal';
 
 const initialValues = {
   name: '',
@@ -30,6 +31,9 @@ const ConstraintForm = () => {
   const [scope, setScope] = useState('');
   const [name, setName] = useState('');
   const [api, setApi] = useState('');
+  const [cpu, setCpu] = useState('');
+  const [memory, setMemory] = useState('');
+
   const [kind, setKind] = useState('');
   const [disabledApi, setDisabledApi] = useState(true);
   const [disabledKind, setDisabledKind] = useState(true);
@@ -39,7 +43,7 @@ const ConstraintForm = () => {
   const fetchTemplates = async () => {
     try {
       const response = await axios.get(
-        'http://52.87.0.87/proxy/apis/templates.gatekeeper.sh/v1beta1/constrainttemplates',
+        'http://34.201.165.156/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates',
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -63,14 +67,14 @@ const ConstraintForm = () => {
 
   const handleSubmit = (values) => {
     const url =
-      `http://52.87.0.87/proxy/apis/constraints.gatekeeper.sh/v1beta1/` +
-      template;
+      `http://34.201.165.156/proxy/apis/constraints.gatekeeper.sh/v1beta1/` +
+      values.template;
 
     const data = {
       apiVersion: 'constraints.gatekeeper.sh/v1beta1',
-      kind: template,
+      kind: values.template,
       metadata: {
-        name: `${name}`,
+        name: `${values.name}`,
       },
       spec: {
         match: {
@@ -120,6 +124,13 @@ const ConstraintForm = () => {
     setKind(event.target.value);
   };
 
+  const handleMemoryChange = (event) => {
+    setMemory(event.target.value);
+  };
+
+  const handleCpuChange = (event) => {
+    setCpu(event.target.value);
+  };
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
@@ -183,7 +194,6 @@ const ConstraintForm = () => {
               error={touched.template && !!errors.template}
               helperText={touched.template && errors.template}
               onChange={handleChange}
-              required
             >
               {templates.map((option) => (
                 <MenuItem
@@ -221,6 +231,17 @@ const ConstraintForm = () => {
                       <InboxIcon />
                     </ListItemIcon>
                     <ListItemText primary="Role" />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={selectedIndex === 2}
+                    onClick={(event) => handleListItemClick(event, 2)}
+                  >
+                    <ListItemIcon>
+                      <InboxIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Memory" />
                   </ListItemButton>
                 </ListItem>
               </List>
@@ -318,6 +339,33 @@ const ConstraintForm = () => {
                 </div>
               </div>
             )}
+
+            {selectedIndex === 2 && (
+              <div className="w-full flex flex-col gap-4 py-4">
+                <div className="w-full flex pl-4">
+                  <div className="flex w-full mx-2">
+                    <TextField
+                      id="CPU"
+                      label="CPU"
+                      value={cpu}
+                      onChange={handleCpuChange}
+                      variant="filled"
+                      fullWidth
+                    />
+                  </div>
+                  <div className="flex w-full mx-2">
+                    <TextField
+                      id="Memory"
+                      label="Memory"
+                      value={memory}
+                      onChange={handleMemoryChange}
+                      fullWidth
+                      variant="filled"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex w-full gap-4 my-4 justify-end">
@@ -325,12 +373,12 @@ const ConstraintForm = () => {
               Create
             </Button>
             <Button
-          variant="contained"
-          color="error"
-          onClick={() => navigate('/frontend/constraints')}
-        >
-          Cancel
-        </Button>
+              variant="contained"
+              color="error"
+              onClick={() => navigate('/frontend/constraints')}
+            >
+              Cancel
+            </Button>
           </div>
         </Form>
       )}
