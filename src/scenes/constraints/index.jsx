@@ -12,7 +12,7 @@ const Constraints = () => {
   const [names, setNames] = useState([]);
 
   useEffect(() => {
-    const baseUrl = `http://34.201.165.156/proxy/apis/constraints.gatekeeper.sh/v1beta1/`;
+    const baseUrl = `http://54.174.246.176/proxy/apis/constraints.gatekeeper.sh/v1beta1/`;
 
     axios
       .get(baseUrl, {
@@ -38,7 +38,7 @@ const Constraints = () => {
 
   function deleteConstraint(nameConstraint) {
     // delete shows 404  :( 
-    const baseUrl = `http://34.201.165.156/proxy/apis/constraints.gatekeeper.sh/v1beta1/k8scontainerlimit/`;
+    const baseUrl = `http://54.174.246.176/proxy/apis/constraints.gatekeeper.sh/v1beta1/k8scontainerlimit/`;
     const deleteUrl = `${baseUrl}${nameConstraint}`;
 
     axios

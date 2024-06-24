@@ -31,6 +31,8 @@ const UpdateConstraintForm = () => {
   const [excludedNamespaces, setExcludedNamespaces] = useState('');
   const [templates, setTemplates] = useState([]);
   const [template, setTemplate] = useState('');
+  const [cpu, setCpu] = useState('');
+  const [memory, setMemory] = useState('');
   const [initialValues, setInitialValues] = useState({
     name: '',
     description: '',
@@ -40,7 +42,7 @@ const UpdateConstraintForm = () => {
   const fetchTemplates = async () => {
     try {
       const response = await axios.get(
-        'http://34.201.165.156/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates',
+        'http://54.174.246.176/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates',
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -59,7 +61,7 @@ const UpdateConstraintForm = () => {
   const fetchConstraint = async () => {
     try {
       const response = await axios.get(
-        `http://34.201.165.156/proxy/apis/constraints.gatekeeper.sh/v1beta1/${id}`,
+        `http://54.174.246.176/proxy/apis/constraints.gatekeeper.sh/v1beta1/${id}`,
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -91,7 +93,7 @@ const UpdateConstraintForm = () => {
   const handleSubmit = (values) => {
     console.log('Submitting form with values:', values); // Debugging log
 
-    const url = `http://34.201.165.156/proxy/apis/constraints.gatekeeper.sh/v1beta1/${template}`;
+    const url = `http://54.174.246.176/proxy/apis/constraints.gatekeeper.sh/v1beta1/${template}`;
 
     const data = {
       apiVersion: 'constraints.gatekeeper.sh/v1beta1',
@@ -145,7 +147,13 @@ const UpdateConstraintForm = () => {
   const handleKindChange = (event) => {
     setKind(event.target.value);
   };
+  const handleMemoryChange = (event) => {
+    setMemory(event.target.value);
+  };
 
+  const handleCpuChange = (event) => {
+    setCpu(event.target.value);
+  };
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
@@ -248,6 +256,18 @@ const UpdateConstraintForm = () => {
                       <InboxIcon />
                     </ListItemIcon>
                     <ListItemText primary="Role" />
+                    
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={selectedIndex === 2}
+                    onClick={(event) => handleListItemClick(event, 2)}
+                  >
+                    <ListItemIcon>
+                      <InboxIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Memory" />
                   </ListItemButton>
                 </ListItem>
               </List>
@@ -342,6 +362,32 @@ const UpdateConstraintForm = () => {
                   >
                     Add role
                   </Button>
+                </div>
+              </div>
+            )}
+                        {selectedIndex === 2 && (
+              <div className="w-full flex flex-col gap-4 py-4">
+                <div className="w-full flex pl-4">
+                  <div className="flex w-full mx-2">
+                    <TextField
+                      id="CPU"
+                      label="CPU"
+                      value={cpu}
+                      onChange={handleCpuChange}
+                      variant="filled"
+                      fullWidth
+                    />
+                  </div>
+                  <div className="flex w-full mx-2">
+                    <TextField
+                      id="Memory"
+                      label="Memory"
+                      value={memory}
+                      onChange={handleMemoryChange}
+                      fullWidth
+                      variant="filled"
+                    />
+                  </div>
                 </div>
               </div>
             )}

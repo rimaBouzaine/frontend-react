@@ -14,8 +14,11 @@ const Card = ({nameT, deleteConstraintTemplate , updateConstraintTemplate}) => {
 
         <div className="flex gap-4 p-4">
             <div >
+                
                 <IconButton color="primary" aria-label="add to shopping cart" onClick={()=>{
                     updateConstraintTemplate(nameT)
+                    
+                    
                 }}>
                     <EditIcon />
                 </IconButton>

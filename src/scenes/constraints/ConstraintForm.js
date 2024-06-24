@@ -43,7 +43,7 @@ const ConstraintForm = () => {
   const fetchTemplates = async () => {
     try {
       const response = await axios.get(
-        'http://34.201.165.156/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates',
+        'http://54.174.246.176/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates',
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -67,7 +67,7 @@ const ConstraintForm = () => {
 
   const handleSubmit = (values) => {
     const url =
-      `http://34.201.165.156/proxy/apis/constraints.gatekeeper.sh/v1beta1/` +
+      `http://54.174.246.176/proxy/apis/constraints.gatekeeper.sh/v1beta1/` +
       values.template;
 
     const data = {
@@ -241,7 +241,7 @@ const ConstraintForm = () => {
                     <ListItemIcon>
                       <InboxIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Memory" />
+                    <ListItemText primary="Parameters" />
                   </ListItemButton>
                 </ListItem>
               </List>
