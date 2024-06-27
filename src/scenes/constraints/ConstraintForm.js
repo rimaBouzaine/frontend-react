@@ -43,7 +43,7 @@ const ConstraintForm = () => {
   const fetchTemplates = async () => {
     try {
       const response = await axios.get(
-        'http://54.174.246.176/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates',
+        'http://54.160.100.97/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates',
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -65,31 +65,80 @@ const ConstraintForm = () => {
     fetchTemplates();
   }, []);
 
+  // const handleSubmit = (values) => {
+  //   const url =
+  //     `http://54.160.100.97/proxy/apis/constraints.gatekeeper.sh/v1beta1/` +
+  //     values.template;
+
+  //   const data = {
+  //     apiVersion: 'constraints.gatekeeper.sh/v1beta1',
+  //     kind: values.template,
+  //     metadata: {
+  //       name: `${values.name}`,
+  //     },
+  //     spec: {
+  //       match: {
+  //         kinds: [{ apiGroups: [`${api}`], kinds: [`${kind}`] }],
+  //         scope: `${scope}`,
+  //         excludedNamespaces: excludedtemplates
+  //           .split(',')
+  //           .map((ns) => ns.trim()),
+  //       },
+  //       parameters: {
+  //         labels: ['app'],
+  //       },
+  //     },
+  //   };
+
+  //   // Make the POST request using Axios
+  //   axios
+  //     .post(url, data, {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response.status >= 200 && response.status < 300) {
+  //         navigate('/frontend/constraints');
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error:', error);
+  //     });
+  // };
   const handleSubmit = (values) => {
     const url =
-      `http://54.174.246.176/proxy/apis/constraints.gatekeeper.sh/v1beta1/` +
+      `http://54.160.100.97/proxy/apis/constraints.gatekeeper.sh/v1beta1/` +
       values.template;
-
+  
     const data = {
       apiVersion: 'constraints.gatekeeper.sh/v1beta1',
       kind: values.template,
       metadata: {
-        name: `${values.name}`,
+        name: values.name,
       },
       spec: {
         match: {
-          kinds: [{ apiGroups: [`${api}`], kinds: [`${kind}`] }],
-          scope: `${scope}`,
-          excludedNamespaces: excludedtemplates
-            .split(',')
-            .map((ns) => ns.trim()),
+          kinds: [
+            {
+              apiGroups: [''],
+              kinds: [values.kind],
+            },
+          ],
+          namespace: values.namespace || '',
+          scope: values.scope || 'Cluster',
+          excludedNamespaces: values.excludedNamespaces
+            ? values.excludedNamespaces.split(',').map((ns) => ns.trim())
+            : [],
         },
         parameters: {
-          labels: ['app'],
+          CPU: values.cpu || '200m',
+          Memory: values.memory || '1Gi',
         },
       },
     };
-
+  
     // Make the POST request using Axios
     axios
       .post(url, data, {

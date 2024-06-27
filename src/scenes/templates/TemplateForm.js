@@ -55,91 +55,98 @@ spec:
   const createTemplate = () => {
     if (!validateFields()) return;
 
-    const url = `http://54.174.246.176/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates/`;
-    /*const data = {
-      apiVersion: 'templates.gatekeeper.sh/v1',
-      kind: 'ConstraintTemplate',
-      metadata: {
-        name: name,
-      },
-      spec: {
-        crd: {
-          spec: {
-            names: {
-              kind: name,
-            },
-            validation: {
-              openAPIV3Schema: {
-                properties: {
-                  invalidName: {
-                    type: 'string',
-                  },
-                },
-              },
-            },
-          },
+    const url = `http://54.160.100.97/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates/`;
+    // const data = {
+    //   apiVersion: 'templates.gatekeeper.sh/v1',
+    //   kind: 'ConstraintTemplate',
+    //   metadata: {
+    //     name: name,
+    //   },
+    //   spec: {
+    //     crd: {
+    //       spec: {
+    //         names: {
+    //           kind: name,
+    //         },
+    //         validation: {
+    //           openAPIV3Schema: {
+    //             properties: {
+    //               invalidName: {
+    //                 type: 'string',
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //     targets: [
+    //       {
+    //         rego: `package ${name}s\n  violation[{"msg": msg}] {\n    input.review.object.metadata.name == input.parameters.invalidName\n    msg := sprintf("The name %v is not allowed", [input.parameters.invalidName])\n  }\n  `,
+    //         target: 'admission.k8s.gatekeeper.sh',
+    //       },
+    //     ],
+    //   },
+    // };
+
+
+const data = {
+  "apiVersion": "templates.gatekeeper.sh/v1",
+  "kind": "ConstraintTemplate",
+  "metadata": {
+    "name": name,
+    "annotations": {
+      "metadata.gatekeeper.sh/title": "Container Limits",
+      "metadata.gatekeeper.sh/version": "1.0.1"
+    }
+  },
+  "spec": {
+    "crd": {
+      "spec": {
+        "names": {
+          "kind": name
         },
-        targets: [
-          {
-            rego: `package ${name}s\n  violation[{"msg": msg}] {\n    input.review.object.metadata.name == input.parameters.invalidName\n    msg := sprintf("The name %v is not allowed", [input.parameters.invalidName])\n  }\n  `,
-            target: 'admission.k8s.gatekeeper.sh',
-          },
-        ],
-      },
-    };*/
-
-
-  const data ={
-    "apiVersion": "templates.gatekeeper.sh/v1",
-    "kind": "ConstraintTemplate",
-    "metadata": {
-      "name": "k8scontainerlimits",
-      "annotations": {
-        "metadata.gatekeeper.sh/title": "Container Limits",
-        "metadata.gatekeeper.sh/version": "1.0.1"
-      }
-    },
-    "spec": {
-      "crd": {
-        "spec": {
-          "names": {
-            "kind": "K8sContainerLimits"
-          },
-          "validation": {
-            "openAPIV3Schema": {
-              "type": "object",
-              "properties": {
-                "exemptImages": {
-                  "description": "Any container that uses an image that matches an entry in this list will be excluded from enforcement. Prefix-matching can be signified with `*`. For example: `my-image-*`.\n It is recommended that users use the fully-qualified Docker image name (e.g. start with a domain name) in order to avoid unexpectedly exempting images from an untrusted repository.",
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "cpu": {
-                  "description": "The maximum allowed cpu limit on a Pod, exclusive.",
-                  "type": "string"
-                },
-                "memory": {
-                  "description": "The maximum allowed memory limit on a Pod, exclusive.",
+        "validation": {
+          "openAPIV3Schema": {
+            "type": "object",
+            "properties": {
+              "exemptImages": {
+                "description": "Any container that uses an image that matches an entry in this list will be excluded from enforcement. Prefix-matching can be signified with `*`. For example: `my-image-*`. It is recommended that users use the fully-qualified Docker image name (e.g. start with a domain name) in order to avoid unexpectedly exempting images from an untrusted repository.",
+                "type": "array",
+                "items": {
                   "type": "string"
                 }
+              },
+              "cpu": {
+                "description": "The maximum allowed cpu limit on a Pod, exclusive.",
+                "type": "string"
+              },
+              "memory": {
+                "description": "The maximum allowed memory limit on a Pod, exclusive.",
+                "type": "string"
               }
             }
           }
         }
-      },
-      "targets": [
-        {
-          "target": "admission.k8s.gatekeeper.sh",
-          "rego": "package k8scontainerlimits\n \n import data.lib.exempt_container.is_exempt\n \n missing(obj, field) = true {\n   not obj[field]\n }\n \n missing(obj, field) = true {\n   obj[field] == \"\"\n }\n \n canonify_cpu(orig) = new {\n   is_number(orig)\n   new := orig * 1000\n }\n \n canonify_cpu(orig) = new {\n   not is_number(orig)\n   endswith(orig, \"m\")\n   new := to_number(replace(orig, \"m\", \"\"))\n }\n \n canonify_cpu(orig) = new {\n   not is_number(orig)\n   not endswith(orig, \"m\")\n   regex.match(\"^[0-9]+(\\\\.[0-9]+)?$\", orig)\n   new := to_number(orig) * 1000\n }\n \n \n mem_multiple(\"Ki\") = 1024000 { true }\n \n mem_multiple(\"Mi\") = 1048576000 { true }\n \n mem_multiple(\"Gi\") = 1073741824000 { true }\n \n \n \n get_suffix(mem) = suffix {\n   not is_string(mem)\n   suffix := \"\"\n }\n \n get_suffix(mem) = suffix {\n   is_string(mem)\n   count(mem) > 0\n   suffix := substring(mem, count(mem) - 1, -1)\n   mem_multiple(suffix)\n }\n \n get_suffix(mem) = suffix {\n   is_string(mem)\n   count(mem) > 1\n   suffix := substring(mem, count(mem) - 2, -1)\n   mem_multiple(suffix)\n }\n \n get_suffix(mem) = suffix {\n   is_string(mem)\n   count(mem) > 1\n   not mem_multiple(substring(mem, count(mem) - 1, -1))\n   not mem_multiple(substring(mem, count(mem) - 2, -1))\n   suffix := \"\"\n }\n \n get_suffix(mem) = suffix {\n   is_string(mem)\n   count(mem) == 1\n   not mem_multiple(substring(mem, count(mem) - 1, -1))\n   suffix := \"\"\n }\n \n get_suffix(mem) = suffix {\n   is_string(mem)\n   count(mem) == 0\n   suffix := \"\"\n }\n \n canonify_mem(orig) = new {\n   is_number(orig)\n   new := orig * 1000\n }\n \n canonify_mem(orig) = new {\n   not is_number(orig)\n   suffix := get_suffix(orig)\n   raw := replace(orig, suffix, \"\")\n   regex.match(\"^[0-9]+(\\\\.[0-9]+)?$\", raw)\n   new := to_number(raw) * mem_multiple(suffix)\n }\n \n violation[{\"msg\": msg}] {\n   general_violation[{\"msg\": msg, \"field\": \"containers\"}]\n }\n \n violation[{\"msg\": msg}] {\n   general_violation[{\"msg\": msg, \"field\": \"initContainers\"}]\n }\n \n \n general_violation[{\"msg\": msg, \"field\": field}] {\n   container := input.review.object.spec[field][_]\n   not is_exempt(container)\n   cpu_orig := container.resources.limits.cpu\n   not canonify_cpu(cpu_orig)\n   msg := sprintf(\"container <%v> cpu limit <%v> could not be parsed\",[container.name, cpu_orig])\n}\n\n general_violation[{\"msg\": msg, \"field\": field}] {\ncontainer:=in }\n ",
-          "libs": [
-            "package lib.exempt_container\n \n is_exempt(container) {\n     exempt_images := object.get(object.get(input, \"parameters\", {}), \"exemptImages\", [])\n     img := container.image\n     exemption := exempt_images[_]\n     _matches_exemption(img, exemption)\n }\n \n _matches_exemption(img, exemption) {\n     not endswith(exemption, \"*\")\n     exemption == img\n }\n \n _matches_exemption(img, exemption) {\n     endswith(exemption, \"*\")\n     prefix := trim_suffix(exemption, \"*\")\n     startswith(img, prefix)\n }\n "
-          ]
-        }
-      ]
-    }
+      }
+    },
+    "targets": [
+      {
+        "target": "admission.k8s.gatekeeper.sh",
+        "rego": "package" +name+ "\n\nimport data.lib.exempt_container.is_exempt\n\nmissing(obj, field) = true {\n  not obj[field]\n}\nmissing(obj, field) = true {\n  obj[field] == \"\"\n}\n\ncanonify_cpu(orig) = new {\n  is_number(orig)\n  new := orig * 1000\n}\ncanonify_cpu(orig) = new {\n  endswith(orig, \"m\")\n  new := to_number(replace(orig, \"m\", \"\"))\n}\ncanonify_cpu(orig) = new {\n  regex.match(\"^[0-9]+(\\\\.[0-9]+)?$\", orig)\n  new := to_number(orig) * 1000\n}\n\nmem_multiple(suffix) = factor {\n  suffix == \"Ki\"\n  factor := 1024\n}\nmem_multiple(suffix) = factor {\n  suffix == \"Mi\"\n  factor := 1048576\n}\nmem_multiple(suffix) = factor {\n  suffix == \"Gi\"\n  factor := 1073741824\n}\n\nget_suffix(mem) = suffix {\n  is_string(mem)\n  count(mem) > 0\n  suffix := substring(mem, count(mem) - 2, -1)\n  mem_multiple(suffix)\n}\nget_suffix(mem) = suffix {\n  suffix := \"\"\n}\n\ncanonify_mem(orig) = new {\n  is_number(orig)\n  new := orig * 1000\n}\ncanonify_mem(orig) = new {\n  suffix := get_suffix(orig)\n  raw := replace(orig, suffix, \"\")\n  regex.match(\"^[0-9]+(\\\\.[0-9]+)?$\", raw)\n  new := to_number(raw) * mem_multiple(suffix)\n}\n\nviolation[{ \"msg_v1\": msg_v1 }] {\n  general_violation[{ \"msg_v1\": msg_v1, \"field\": \"containers\" }]\n}\nviolation[{ \"msg_v2\": msg_v2 }] {\n  general_violation[{ \"msg_v2\": msg_v2, \"field\": \"initContainers\" }]\n}\n\ngeneral_violation[{ \"msg_v3\": msg_v3, \"field\": field }] {\n  container := input.review.object.spec[field][_]\n  not is_exempt(container)\n  resource_limit_violations(container, msg_v3)\n}\n\nresource_limit_violations(container, msg_v4) {\n  cpu_orig := container.resources.limits.cpu\n  not canonify_cpu(cpu_orig)\n  msg_v4 := sprintf(\"container <%v> cpu limit <%v> could not be parsed\", [container.name, cpu_orig])\n}\nresource_limit_violations(container, msg_v5) {\n  mem_orig := container.resources.limits.memory\n  not canonify_mem(mem_orig)\n  msg_v5 := sprintf(\"container <%v> memory limit <%v> could not be parsed\", [container.name, mem_orig])\n}\nresource_limit_violations(container, msg_v6) {\n  not container.resources\n  msg_v6 := sprintf(\"container <%v> has no resource limits\", [container.name])\n}\nresource_limit_violations(container, msg_v7) {\n  not container.resources.limits\n  msg_v7 := sprintf(\"container <%v> has no resource limits\", [container.name])\n}\nresource_limit_violations(container, msg_v8) {\n  missing(container.resources.limits, \"cpu\")\n  msg_v8 := sprintf(\"container <%v> has no cpu limit\", [container.name])\n}\nresource_limit_violations(container, msg_v9) {\n  missing(container.resources.limits, \"memory\")\n  msg_v9 := sprintf(\"container <%v> has no memory limit\", [container.name])\n}\nresource_limit_violations(container, msg_v10) {\n  cpu_orig := container.resources.limits.cpu\n  cpu := canonify_cpu(cpu_orig)\n  max_cpu_orig := input.parameters.cpu\n  max_cpu := canonify_cpu(max_cpu_orig)\n  cpu > max_cpu\n  msg_v10 := sprintf(\"container <%v> cpu limit <%v> is higher than the maximum allowed of <%v>\", [container.name, cpu_orig, max_cpu_orig])\n}\nresource_limit_violations(container, msg_v11) {\n  mem_orig := container.resources.limits.memory\n  mem := canonify_mem(mem_orig)\n  max_mem_orig := input.parameters.memory\n  max_mem := canonify_mem(max_mem_orig)\n  mem > max_mem\n  msg_v11 := sprintf(\"container <%v> memory limit <%v> is higher than the maximum allowed of <%v>\", [container.name, mem_orig, max_mem_orig])\n}"
+      }
+    ],
+    "libs": [
+      {
+        "name": "lib.exempt_container",
+        "rego": "package lib.exempt_container\n\nis_exempt(container) {\n  exempt_images := object.get(object.get(input, \"parameters\", {}), \"exemptImages\", [])\n  img := container.image\n  exemption := exempt_images[_]\n  _matches_exemption(img, exemption)\n}\n\n_matches_exemption(img, exemption) {\n  not endswith(exemption, \"*\")\n  exemption == img\n}\n\n_matches_exemption(img, exemption) {\n  endswith(exemption, \"*\")\n  prefix := trim_suffix(exemption, \"*\")\n  startswith(img, prefix)\n}"
+      }
+    ]
   }
+}
+
+
+
+
 
     
     axios

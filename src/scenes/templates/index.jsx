@@ -12,7 +12,7 @@ const Templates = () => {
   const [names, setNames] = useState([]);
 
   useEffect(() => {
-    const baseUrl = `http://54.174.246.176/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates`;
+    const baseUrl = `http://54.160.100.97/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates`;
 
     axios
       .get(baseUrl, {
@@ -32,7 +32,7 @@ const Templates = () => {
   const list = names.map((obj) => obj.metadata.name);
 
   function deleteConstraintTemplate(nameTemplate) {
-    const baseUrl = `http://54.174.246.176/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates/`;
+    const baseUrl = `http://54.160.100.97/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates/`;
     const deleteUrl = `${baseUrl}${nameTemplate}`;
 
     axios
