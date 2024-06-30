@@ -42,7 +42,7 @@ const UpdateConstraintForm = () => {
   const fetchTemplates = async () => {
     try {
       const response = await axios.get(
-        'http://54.160.100.97/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates',
+        'http://34.204.91.115/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates',
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -61,7 +61,7 @@ const UpdateConstraintForm = () => {
   const fetchConstraint = async () => {
     try {
       const response = await axios.get(
-        `http://54.160.100.97/proxy/apis/constraints.gatekeeper.sh/v1beta1/${id}`,
+        `http://34.204.91.115/proxy/apis/constraints.gatekeeper.sh/v1beta1/${id}`,
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -93,7 +93,7 @@ const UpdateConstraintForm = () => {
   const handleSubmit = (values) => {
     console.log('Submitting form with values:', values); // Debugging log
 
-    const url = `http://54.160.100.97/proxy/apis/constraints.gatekeeper.sh/v1beta1/${template}`;
+    const url = `http://34.204.91.115/proxy/apis/constraints.gatekeeper.sh/v1beta1/${template}`;
 
     const data = {
       apiVersion: 'constraints.gatekeeper.sh/v1beta1',

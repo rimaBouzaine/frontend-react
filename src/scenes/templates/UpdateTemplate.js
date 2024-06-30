@@ -33,7 +33,7 @@ spec:
   const fetchTemplate = async () => {
     try {
       const response = await axios.get(
-        `http://54.160.100.97/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates/${id}`,
+        `http://34.204.91.115/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates/${id}`,
         {
           headers: {
             Authorization: `Bearer ${getWithExpiry('kubeToken')}`,
@@ -80,7 +80,7 @@ spec:
   const updateTemplate = () => {
     if (!validateFields()) return;
 
-    const url = `http://54.160.100.97/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates/k8scontainerlimits`;
+    const url = `http://34.204.91.115/proxy/apis/templates.gatekeeper.sh/v1/constrainttemplates/k8scontainerlimits`;
     /*  const data = {
       apiVersion: 'templates.gatekeeper.sh/v1',
       kind: 'ConstraintTemplate',
